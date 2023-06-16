@@ -1,0 +1,30 @@
+# MAnorm differential peak analysis
+
+conda activate py39
+
+# Single-end reads, peak bed and read bam format
+manorm --p1 HDAC_DES_r1.bed --p2 HDAC_CTRL_r1.bed --r1 HDAC-DES3.nodups.bam --r2 HDAC-CON7.nodups.bam --rf bam -w 400 -o HDAC-DES_r1
+
+# Paired-end reads, peak xls and read bam format
+manorm --p1 peakFiles/HK2SaltRloop_peaks.xls --p2 peakFiles/HK2NTRloop_peaks.xls --r1 readFiles/HK2SaltRloop_sorted.bam --r2 readFiles/HK2NTRloop_sorted.bam --rf bam --pf macs2 --pe -o G41H6_salt_peaks -w 1000
+
+manorm --p1 WT-DES1_peaks.xls --p2 WT-CON5_peaks.xls --r1 WT-DES1.nodups.bam --r2 WT-CON5.nodups.bam --rf bam --pf macs2 --pe -o DES1_5_peaks -w 400
+manorm --p1 WT-DES2_peaks.xls --p2 WT-CON5_peaks.xls --r1 WT-DES2.nodups.bam --r2 WT-CON5.nodups.bam --rf bam --pf macs2 --pe -o DES2_5_peaks -w 400
+manorm --p1 WT-DES1_peaks.xls --p2 WT-CON6_peaks.xls --r1 WT-DES1.nodups.bam --r2 WT-CON6.nodups.bam --rf bam --pf macs2 --pe -o DES1_6_peaks -w 400
+manorm --p1 WT-DES2_peaks.xls --p2 WT-CON6_peaks.xls --r1 WT-DES2.nodups.bam --r2 WT-CON6.nodups.bam --rf bam --pf macs2 --pe -o DES2_6_peaks -w 400
+
+manorm --p1 NaCl_G4_merged_peaks.xls --p2 NT_G4_merged_peaks.xls --r1 NaCl_G4_merged.bam --r2 NT_G4_merged.bam --rf bam --pf macs2 --pe -o G4_peaks -w 1000
+manorm --p1 NaCl_G41H6_merged_peaks.xls --p2 NT_G41H6_merged_peaks.xls --r1 NaCl_G41H6_merged.bam --r2 NT_G41H6_merged.bam --rf bam --pf macs2 --pe -o G41H6_peaks -w 1000
+manorm --p1 NaCl_Rloop_merged_peaks.xls --p2 NT_Rloop_merged_peaks.xls --r1 NaCl_Rloop_merged.bam --r2 NT_Rloop_merged.bam --rf bam --pf macs2 --pe -o Rloop_peaks -w 1000
+
+manorm --p1 GM1NaClNFAT5_peaks.xls --p2 GM1NFAT5_peaks.xls --r1 GM1NaClNFAT5_sorted.bam --r2 GM1NFAT5_sorted.bam --rf bam --pf macs2 --pe -o GM1_NFAT5 -w 1000
+
+manorm --p1 GM1NaClPolIISer2_peaks.xls --p2 GM1PolIISer2_peaks.xls --r1 GM1NaClPolIISer2_sorted.bam --r2 GM1PolIISer2_sorted.bam --rf bam --pf macs2 --pe -o GM1_PolSer2 -w 1000
+
+
+
+
+
+
+
+

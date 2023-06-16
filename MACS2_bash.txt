@@ -1,0 +1,50 @@
+# MACS2 analysis, single sample, paired end, FDR, transcritpion factor ChIP, human
+echo macs2 callpeak -t MES1703.1-RHPS4.unique.bam -c MES1703.5-DMSO.unique.bam -f BAMPE -g hs -n RHPS4 -B -q 0.1 --outdir macs2
+echo macs2 callpeak -t MES1703.2-PDS.unique.bam -c MES1703.4-DMSO.unique.bam -f BAMPE -g hs -n PDS -B -q 0.1 --outdir macs2
+
+MACS2 analysis, single sample, single end, pval, transcritpion factor ChIP, human
+echo macs2 callpeak -t SRR577877_1.sorted.bam -n Hs_Neuroblastoma_MEF2A_77 -p 1e-5 -g hs --keep-dup all --outdir Hs_Neuroblastoma_MEF2A_77
+
+MACS2 analysis, single sample, single end, pval, transcritpion factor ChIP, mouse
+echo macs2 callpeak -t  SRR1873310_1.sorted.bam -n Mm_Neuron_Mef2a_10 -p 1e-5 -g mm --keep-dup all --outdir Mm_Neuron_Mef2a_10
+
+# MACS2 analysis, single sample, histone mark ChIP, mouse
+echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t NOVA0217.d5-WTDES-H3K27ac.nodups.bam -c NOVA0217.d5-WTco-H3K27ac.nodups.bam -f BAMPE -g mm -n H3K27ac --broad --broad-cutoff 0.1 --outdir macs2_WT
+for file in *.bam; do echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t "${file}" -c Pooled_Input.bam -f BAM -g mm -n "${file/.bam/}" --broad --broad-cutoff 0.1 --outdir macs2; done
+
+# MACS2 analysis, single sample, no input control, histone mark ChIP, mouse
+for file in *.bam; do echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t "${file}" -f BAMPE -g mm -n "${file/.bam/}" --broad --broad-cutoff 0.1 --outdir MACS2; done
+
+# MACS2 analysis, multiple samples, ATACseq, mouse
+echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t cOE-co1.nodups.bam cOE-co2.nodups.bam -f BAMPE -g mm -n PND16_cOEco -B -q 0.1 --outdir PND16_cOEco
+echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t cOE-DES1.nodups.bam cOE-DES2.nodups.bam -f BAMPE -g mm -n PND16_cOEDES -B -q 0.1 --outdir PND16_cOEDES
+echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t WT-co1.nodups.bam WT-co2.nodups.bam -f BAMPE -g mm -n PND16_WTco -B -q 0.1 --outdir PND16_WTco
+echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t WT-DES1.nodups.bam WT-DES2.nodups.bam -f BAMPE -g mm -n PND16_WTDES -B -q 0.1 --outdir PND16_WTDES
+echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t WT-CON5.nodups.bam -f BAMPE -g mm -n WT-CON5 -q 0.1 --outdir WT-CON5
+for file in *nodups.bam; do echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t "${file}" -f BAMPE -g mm --keep-dup all --cutoff-analysis --call-summits -q 0.1 -n "${file/.nodups.bam/}" --outdir "${file/.nodups.bam/}"; done
+
+# MACS2 analysis, bedgraph file input
+echo macs2 bdgpeakcall -i HDAC_CTRL_r1.bg -o HDAC_CTRL_r1
+
+# MACS2 analysis, single sample, CUT&TAG, human
+echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t 3386aG4.sorted.bam -c 3386MmIgG.sorted.bam -p 1e-5 -f BAMPE -g hs --keep-dup all -n DIFF-aG4 --outdir DIFF-aG4  
+echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t 3386BRACO19aG4.sorted.bam -c 3386MmIgG.sorted.bam -p 1e-5 -f BAMPE -g hs --keep-dup all -n DIFF-BRACO --outdir DIFF-BRACO
+echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t NaCl_MEF2a_merged.bam -c NaCl_IgG_merged.bam -p 1e-5 -f BAMPE -g hs --keep-dup all -n NaCl_MEF2A --outdir NaCl_MEF2A
+
+# MACS2 analysis, multiple samples, CUT&TAG, human
+for file in *.bam; do echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t "${file}" -c NS51291.HK2SaltmMIgG_30-200.bam -p 1e-5 -f BAMPE -g hs --keep-dup all -n "${file/.bam/}" --outdir "${file/.bam/}"; done
+for file in *.bam; do echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t "${file}" -c NS51309.HsfNaClIgG_sorted.bam -p 1e-5 -f BAMPE -g hs --keep-dup all -n "${file/_sorted.bam/}" --outdir "${file/_sorted.bam/}"; done
+echo macs2 callpeak -t NaCl_Mef2a_Rep1 -c Ctrl_Mef2a_Rep1.bam -p 1e-5 -f BAMPE -g hs --keep-dup all -n Mef2a_Rep1 --outdir Mef2a_Rep1
+
+# MACS2 analysis, multiple samples, CUT&TAG, human, no input control
+for file in *.bam; do echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t "${file}" -p 1e-5 -f BAMPE -g hs --keep-dup all -n "${file/.bam/}" --outdir "${file/.bam/}"; done
+for file in *.bam; do echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t "${file}" -p 1e-5 -f BAMPE -g hs --keep-dup all -n "${file/_sorted.bam/}" --outdir "${file/_sorted.bam/}"; done
+
+# MACS2 analysis, multiple samples, CUT&TAG, human, no input control, no duplicates
+for file in *.bam; do echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t "${file}" -p 1e-5 -f BAMPE -g hs -n "${file/_sorted.bam/}" --outdir "${file/_sorted.bam/}"; done
+
+for file in *.bam; do echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t "${file}" -p 1e-5 -f BAMPE -g hs -n "${file/_nodups.bam/}" --outdir "${file/_nodups.bam/}"; done
+
+
+# MACS2 analysis, multiple samples, CUT&TAG, mouse, no input control
+for file in *.bam; do echo srun --partition=bioinfo --cpus-per-task=8 macs2 callpeak -t "${file}" -p 1e-5 -f BAMPE -g mm --keep-dup all -n "${file/_possorted.bam/}" --outdir "${file/_possorted.bam/}"; done

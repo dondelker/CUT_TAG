@@ -1,0 +1,10 @@
+# Sort bam files
+for file in *out.bam; do echo srun --partition=bioinfo --cpus-per-task=8 java -Xmx2g -jar /ddn/gs1/home/delkerda/tools/picard/picard.jar SortSam VALIDATION_STRINGENCY=SILENT I="${file}" O="${file/Aligned.out.bam/_sorted.bam}" SO=coordinate; done
+for file in *sorted.bam; do echo samtools view -q 5 -f 2 -bh "${file}" > "${file/sorted.bam/clean.bam}"; done
+
+# Convert sam to sorted bam file
+for file in *.sam; do echo java -Xmx2g -jar /ddn/gs1/home/delkerda/tools/picard/picard.jar SortSam VALIDATION_STRINGENCY=SILENT I="${file}" O="${file/sam/sorted.bam}" SO=coordinate; done
+for file in *.sam; do echo java -Xmx2g -jar /ddn/gs1/home/delkerda/tools/picard/picard.jar SortSam VALIDATION_STRINGENCY=SILENT I="${file}" O="${file/20221208_153535.L001.sam/sorted.bam}" SO=coordinate; done
+
+for file in *.sam; do echo java -Xmx2g -jar /ddn/gs1/home/delkerda/tools/picard/picard.jar SortSam VALIDATION_STRINGENCY=SILENT I="${file}" O="${file/20230504_144536.L001.sam/sorted.bam}" SO=coordinate; done
+

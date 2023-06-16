@@ -1,0 +1,4 @@
+for file in *sorted.bam; do echo srun --partition=bioinfo --cpus-per-task=8 java -jar /ddn/gs1/home/delkerda/tools/picard/picard.jar EstimateLibraryComplexity I="${file}" O="${file/sorted.bam/library_metrics.txt}"; done
+
+for file in *merged.bam; do echo srun --partition=bioinfo --cpus-per-task=8 java -jar /ddn/gs1/home/delkerda/tools/picard/picard.jar EstimateLibraryComplexity I="${file}" O="${file/merged.bam/library_metrics.txt}"; done
+

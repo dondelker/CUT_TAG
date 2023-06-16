@@ -1,0 +1,21 @@
+# Paired fastqs, single sample, mm10 alignment with bowtie2 
+srun --partition=bioinfo --cpus-per-task=8 bowtie2 -p 8 -x /ddn/gs1/shared/dirib/reference_genomes/mm10/indexBowtie2_mm10ordered/mm10 -1 cOE-DES2_CT.1.fastq.gz -2 cOE-DES2_CT.2.fastq.gz -S cOE-DES2.sam --met-file cOE-DES2.tsv
+
+# Paired fastqs, multiple samples, mm10 alignment with bowtie2
+for file in $(ls *.fq.gz | sed -r 's/_20201209_190701.L001.[12]_val_[12].fq.gz//' | sort -u); do echo srun --partition=bioinfo --cpus-per-task=8  bowtie2 -p 8 -X 2000 --fr --local -x /ddn/gs1/shared/dirib/reference_genomes/mm10/indexBowtie2_mm10ordered/mm10 -1 "${file}_20201209_190701.L001.1_val_1.fq.gz" -2 "${file}_20201209_190701.L001.2_val_2.fq.gz" -S "${file}.sam" --met-file "${file}.tsv"; done
+for file in $(ls *.fq.gz | sed -r 's/_20210225_183533.L001.[12]_val_[12].fq.gz//' | sort -u); do echo srun --partition=bioinfo --cpus-per-task=8  bowtie2 -p 8 -X 2000 --fr --local -x /ddn/gs1/shared/dirib/reference_genomes/mm10/indexBowtie2_mm10ordered/mm10 -1 "${file}_20210225_183533.L001.1_val_1.fq.gz" -2 "${file}_20210225_183533.L001.2_val_2.fq.gz" -S "${file}.sam" --met-file "${file}.tsv"; done
+
+for file in $(ls *.fastq.gz | sed -r 's/_20220803_140059.L001.CT.[12].fastq.gz//' | sort -u); do echo srun --partition=bioinfo --cpus-per-task=8  bowtie2 -p 8 -X 2000 --very-sensitive -x /ddn/gs1/shared/dirib/reference_genomes/mm10/indexBowtie2_mm10ordered/mm10 -1 "${file}_20220803_140059.L001.CT.1.fastq.gz" -2 "${file}_20220803_140059.L001.CT.2.fastq.gz" -S "${file}.sam" --met-file "${file}.tsv"; done
+
+# Single fastqs, multiple samples, Hg38 alignment
+for file in *.CT.fastq.gz; do echo srun --partition=bioinfo --cpus-per-task=8 bowtie2 -p 8 -X 2000 --very-sensitive -x /ddn/gs1/shared/dirib/reference_genomes/hg38/indexBowtie2_hg38noAlt/hg38noAlt -U "${file}" -S "${file/CT.fastq.gz/}sam" --met-file "${file/CT.fastq.gz/}tsv"; done
+
+# Single fastqs, multiple samples, mm10 alignment
+for file in *.CT.fastq.gz; do echo srun --partition=bioinfo --cpus-per-task=8 bowtie2 -p 8 -X 2000 --very-sensitive -x /ddn/gs1/shared/dirib/reference_genomes/mm10/indexBowtie2_mm10ordered/mm10 -U "${file}" -S "${file/.CT.fastq.gz/}.sam" --met-file "${file/.CT.fastq.gz/}.tsv"; done
+
+
+# CUT & TAG, paired run, Hg38 alignment
+srun --partition=bioinfo --cpus-per-task=8 bowtie2 -p 8 -X 700 --local --very-sensitive-local --no-unal --no-mixed --no-discordant --phred33 -I 10 -x /ddn/gs1/shared/dirib/reference_genomes/hg38/indexBowtie2_hg38noAlt/hg38noAlt -1 NS51208.3386RHPS4aG4_20211129_140005.L001.1.fastq.gz -2 NS51208.3386RHPS4aG4_20211129_140005.L001.2.fastq.gz -S 3386RHPS4aG4.sam --met-file 3386RHPS4aG4.tsv
+
+# CUT & TAG, paired run, multiple samples, Hg38 alignment
+for file in $(ls *.fastq.gz | sed -r 's/.CT.[12].fastq.gz//' | sort -u); do echo srun --partition=bioinfo --cpus-per-task=8  bowtie2 -p 8 -X 700 --local --very-sensitive-local --no-unal --no-mixed --no-discordant --phred33 -I 10 -x /ddn/gs1/shared/dirib/reference_genomes/hg38/indexBowtie2_hg38noAlt/hg38noAlt -1 "${file}.CT.1.fastq.gz" -2 "${file}.CT.2.fastq.gz" -S "${file}.sam" --met-file "${file}.tsv"; done

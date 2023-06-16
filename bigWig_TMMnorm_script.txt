@@ -1,0 +1,36 @@
+# use linux terminal
+## BED (0-based) to SAF (1-based):
+awk 'OFS="\t" {print $1"_"$2+1"_"$3, $1, $2+1, $3, "+"}' protein_coding_noMT.bed > protein_coding_noMT.saf
+
+## quantify bam files over peaks
+featureCounts -a protein_coding_noMT.saf -F SAF -o protein_coding_noMT.countmatrix *.bam
+
+
+# use R
+require(data.table)
+require(edgeR)
+
+## turn off exponential notation to avoid rounding errors
+options(scipen=999) 
+
+## load count matrix, removing all columns that we are not interested in
+raw.counts <- fread("protein_coding_noMT.countmatrix", data.table=FALSE, header=TRUE, skip=c(1))
+raw.counts <- raw.counts[,7:ncol(raw.counts)]
+
+## effective normalization factors are the product of TMM factor and library size for each sample
+norm.factor   <- calcNormFactors(object = raw.counts, method = c("TMM"))
+lib.size      <- colSums(raw.counts)
+final.factor  <- norm.factor * lib.size
+
+## scale reads "per million" and get the reciprocal value for bamCoverage
+perMillion.factor <- (final.factor / 1000000)^-1
+
+## write to disk:
+write.table(x = data.frame(Sample     = names(perMillion.factor),
+                           NormFactor = perMillion.factor),
+            file = "normFactors.txt", sep="\t", quote = FALSE,
+            col.names = TRUE, row.names = FALSE)
+
+
+# use linux terminal 
+/ddn/gs1/biotools/deepTools33/bin/bamCoverage -b ATM2NaClMEF2A_nodups.bam --scaleFactor 3999.5859216225 -bs 20 -p 8 -e -o ATM2NaClMEF2A.bw
